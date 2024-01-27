@@ -17,6 +17,6 @@ RUN go get "github.com/prometheus/common/version@v0.8.0"
 # Build Go 
 RUN go build -o /opt/src/gocalc/app
 
-FROM alpine:latest
+FROM alpine:3.19.1
 COPY --from=build /opt/src/gocalc/app /bin/gocalc
 CMD ["/bin/gocalc"]
