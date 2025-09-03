@@ -6,13 +6,12 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sync"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/prometheus/common/log"
-	"github.com/prometheus/common/version"
 )
 
 const (
@@ -273,7 +272,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	e.mutex.Lock() // To protect metrics from concurrent collects.
 	defer e.mutex.Unlock()
 	if err := e.collect(ch); err != nil {
-		log.Errorf("Error scraping onlyoffice: %s", err)
+		log.Printf("Error scraping onlyoffice: %s", err)
 		e.scrapeFailures.Inc()
 		e.scrapeFailures.Collect(ch)
 	}
@@ -306,10 +305,10 @@ func main() {
 	exporter := NewExporter(*scrapeURI)
 	prometheus.MustRegister(exporter)
 
-	log.Infoln("Starting prometheus-onlyoffice-exporter", version.Info())
-	log.Infoln("Build context", version.BuildContext())
-	log.Infof("Starting Server: %s", *listenAddress)
-	log.Infof("Collect from: %s", *scrapeURI)
+	log.Println("Starting prometheus-onlyoffice-exporter")
+	log.Println("Build context: prometheus-exporter-onlyoffice")
+	log.Printf("Starting Server: %s", *listenAddress)
+	log.Printf("Collect from: %s", *scrapeURI)
 
 	http.Handle(*metricsPath, promhttp.Handler())
 	log.Fatal(http.ListenAndServe(*listenAddress, nil))
