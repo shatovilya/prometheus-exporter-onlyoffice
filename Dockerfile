@@ -9,6 +9,6 @@ COPY . .
 # Build Go 
 RUN go build -o /opt/src/gocalc/app
 
-FROM alpine:latest
+FROM alpine:3.19.1
 COPY --from=build /opt/src/gocalc/app /bin/gocalc
 ENTRYPOINT ["/bin/gocalc"]
